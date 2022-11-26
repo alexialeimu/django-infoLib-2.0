@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if user.is_authenticated and user.is_superuser %}
+
+	<h3>You are about to delete {{ book.name }}</h3>
+
+		<div class="container">
+			<form action="" method="POST" width="40px" style="margin: auto;">
+	        {% csrf_token %}
+	            <button id="return" type="submit" class="btn btn-success btn" style="width: 80px;">OK</button>
+	        </form>
+	        <button id="borrow" type="cancel" style="width: 80px;" class="btn btn-danger btn">Cancel</button>
+		</div>
+
+	</div>
+
+{% endif %}
+
+	<script type="text/javascript">
+	    document.getElementById("cancel").onclick = function () {
+	        location.href = "{{ detailurl }}";
+	    };
+	</script>
+
+{% endblock %}

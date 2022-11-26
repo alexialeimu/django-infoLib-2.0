@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+	<h3>Register</h3>
+
+	<div class="container">
+		{% if registered %}
+			<div class="alert alert-success" role="alert">Thank you for registering! You can now log in.</div>
+		{% else %}
+			<form class="form-signin" id="user_form" method="post" action="" enctype="multipart/form-data">
+				{% csrf_token %}
+				<label for="id_username" class="sr-only">Username:</label>
+				<input id="id_username" class="form-control" name="username" type="text" placeholder="Username" required /><br>
+
+				<label for="id_password" class="sr-only">Password:</label>
+				<input id="id_password" class="form-control" name="password" type="password" placeholder="Password" required /><br>
+
+				<button class="btn btn-lg btn-primary btn-block" type="submit" name="submit" value="Register" />Register</button>
+			</form>
+		{% endif %}
+	</div>
+
+{% endblock %}

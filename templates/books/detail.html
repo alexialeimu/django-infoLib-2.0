@@ -1,0 +1,168 @@
+{% extends "base.html" %} {% block content %}
+
+
+<div class="container">
+
+	<!-- the sidebar of book page -->
+	<div class="row">
+		<div class="col-sm-4 col-md-3">
+			<div class="book-info">
+				{% if user.is_authenticated %}
+					{% if book.borrowed %}
+						{% if book.borrower == user %}
+							<a href="{% url 'books:return' book.id %}" class="btn btn-danger btn-sm" id="return" role="button">Return</a>
+							<br>
+							<br>
+							<br>
+						{% else %}
+							Borrowed by
+							<a href="{% url 'books:profile' book.borrower.id %}">
+								<span class="username">{{ book.borrower }}</span>
+							</a>
+							<br>
+							<br>
+						{% endif %}
+					{% else %}
+						<a href="{% url 'books:borrow' book.id user.id %}" class="btn btn-default btn-sm" id="borrow" role="button">Borrow</a>
+						<br>
+						<br>
+						<br>
+					{% endif %}
+				{% endif %}
+				{% if book.cover_URL %}
+				<img id="book-img" src="{{ book.cover_URL }}" class="img-responsive"> {% else %}
+				<h3>No image to display</h3>
+				{% endif %}
+				<br>
+				{% if user.is_superuser %}
+					<a href="{% url 'books:delete' book.id %}" class="btn btn-danger btn-sm" id="return" role="button">Delete</a><br><br>
+				{% endif %}
+				<br>
+				<br>
+			</div>
+		</div>
+
+		<!-- basic information of the book -->
+		<div class="col-sm-8 col-md-9">
+			<h5>{{ book.author }}; {{ book.publication_year }}</h5>
+			<h3 class="book-title">{{ book.name }}</h3>
+			<h6>
+				<strong>Publisher:</strong> {{ book.publisher }}
+				<br>
+				<strong>Page count:</strong> {{ book.page_count }}
+				<br>
+				<br>
+			</h6>
+			<p>{{ book.description }}</p>
+		</div>
+	</div>
+
+	<!-- borrowing history section -->
+	<div class="row">
+		<div class="col-sm-4 col-md-3">
+			<h3>Borrowing history</h3>
+			<div class="latest">
+				{% for borrowing in all_borrowings|dictsortreversed:"borrowing_date" %}
+					{% if forloop.counter < 11 %}
+                        {% if borrowing.borrower.id %}
+                            Borrowed by
+                            <a href="{% url 'books:profile' borrowing.borrower.id %}">
+                                <span class="username">{{ borrowing.borrower }}</span>
+                            </a>
+                            ({{ borrowing.borrowing_date | date:"d.m." }})<br>
+                        {% endif %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- review section -->
+		<div class="col-sm-8 col-md-9">
+			<h3 class="h3_review">Reviews</h3>
+
+			<!-- if user is authenticated -->
+			{% if user.is_authenticated %}
+			<div class="row">
+				<a href="{% url 'books:reviews' book.id user.id %}" class="btn btn-success btn-sm" id="reviewbutton" role="button">Review this book</a>
+			</div>
+
+				<!-- if there is reviews -->
+				{% if all_reviews %}
+					{% for review in all_reviews %}
+						{% if forloop.first %}
+							<div class="row">
+						{% endif %}
+
+						<div class="col-xs-12 col-sm-6 col-lg-4" id="review">
+							{{ review.rating }}/5
+							<p>{{ review.review }}</p>
+							<a href="{% url 'books:profile' review.reviewer.id %}">
+								<p id="reviewer">
+									<small>- {{ review.reviewer }}</small>
+								</p>
+							</a>
+						</div>
+
+						{% if forloop.counter|divisibleby:3 %}
+							</div>
+							<br>
+							<div class="row">
+						{% endif %}
+
+						{% if forloop.last %}
+							</div>
+						{% endif %}
+
+					{% endfor %}
+
+				<!-- if there is no reviews -->
+				{% else %}
+					<p>There is no reviews</p>
+				{% endif %}
+
+			<!-- if user is not authenticated -->
+			{% else %}
+
+				<!-- if there is reviews -->
+				{% if all_reviews %}
+					{% for review in all_reviews %}
+						{% if forloop.first %}
+							<div class="row">
+						{% endif %}
+
+						<div class="col-xs-12 col-sm-6 col-lg-4" id="review">
+							{{ review.rating }}/5
+							<p>{{ review.review }}</p>
+							<a href="{% url 'books:profile' review.reviewer.id %}">
+								<p id="reviewer">
+									<small>- {{ review.reviewer }}</small>
+								</p>
+							</a>
+						</div>
+
+						{% if forloop.counter|divisibleby:3 %}
+							</div>
+							<br>
+							<div class="row">
+						{% endif %}
+
+						{% if forloop.last %}
+							</div>
+						{% endif %}
+
+					{% endfor %}
+
+				<!-- if there is no reviews -->
+				{% else %}
+					<p>There is no reviews</p>
+				{% endif %}
+
+			{% endif %}
+
+
+		</div>
+	</div>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %} {% block content %}
+
+<!-- content -->
+
+<article id="team">
+    <div class="container">
+        <div class="row">
+            <div>
+                <h3>ALL BOOKS</h3>
+
+                <div id="search_container">
+                    <form role="search" method="get" action="/search/">
+                        <div class="input-group search-input-group">
+                            <input type="text" class="form-control" id="searchBox" class="form-control" name="q" value="{{ query }}" placeholder="Search">
+                            <span class="input-group-addon">
+                                <button type="submit">
+                                    <span class="glyphicon glyphicon-search" value="search"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+
+
+                {% if all_books or results %}
+                    <div class="table-responsive" id="all_books">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Borrow</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <!-- book search: show only the result books -->
+                                {% if results %}
+
+                                    {% for book in results %}
+                                    <tr>
+                                        <td>
+                                            {{ book.author }}, {{ book.publication_year }}
+                                            <a href="{% url 'books:detail' book.id %}">
+                                                <h4>{{ book.name }}</h4>
+                                            </a>
+                                        </td>
+                                        {% if book.status == 'o' %} {% if user.is_authenticated and book.borrower == user %}
+                                        <td>
+                                            <a href="{% url 'books:return' book.id %}?next={{request.path}}" class="btn btn-danger btn-sm" id="return" role="button">Return</a>
+                                        </td>
+                                        {% else %}
+                                        <td>
+                                            Borrowed by <a href="{% url 'books:profile' book.borrower.id %}"><span class="username">{{ book.borrower }}</span></a>
+                                        </td>
+                                        {% endif %} {% elif book.status == 'a' and user.is_authenticated %}
+                                        <td>
+                                            <a href="{% url 'books:borrow' book.id user.id %}?next={{request.path}}" class="btn btn-success btn-sm" id="borrow" role="button">Borrow</a>
+                                        </td>
+                                        {% else %}
+                                        <td>Sign in!</td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+
+                                <!-- list all the books -->
+
+                                {% elif all_books %}
+
+                                    {% for book in all_books %}
+                                        <tr>
+                                            <td>
+                                                {{ book.author }}, {{ book.publication_year }}
+                                                <a href="{% url 'books:detail' book.id %}">
+                                                    <h4>{{ book.name }}</h4>
+                                                </a>
+                                            </td>
+                                            {% if book.status == 'o' %} {% if user.is_authenticated and book.borrower == user %}
+                                            <td>
+                                                <a href="{% url 'books:return' book.id %}?next={{request.path}}" class="btn btn-danger btn-sm" id="return" role="button">Return</a>
+                                            </td>
+                                            {% else %}
+                                            <td>
+                                                Borrowed by <a href="{% url 'books:profile' book.borrower.id %}"><span class="username">{{ book.borrower }}</span></a>
+                                            </td>
+                                            {% endif %} {% elif book.status == 'a' and user.is_authenticated %}
+                                            <td>
+                                                <a href="{% url 'books:borrow' book.id user.id %}?next={{request.path}}" class="btn btn-success btn-sm" id="borrow" role="button">Borrow</a>
+                                            </td>
+                                            {% else %}
+                                            <td>Please sign in</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- content -->
+
+
+{% endblock %}
