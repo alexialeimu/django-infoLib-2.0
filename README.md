@@ -14,7 +14,7 @@ The previous, original version can be found here: https://github.com/JoelLappala
 
 Install Python 3.11.0 and Postgres 15.1
 
-Clone the repository and install dependencies
+Clone the repository
 ```bash
 $ git clone git@github.com:alexialeimu/infoLib-2.0.git
 $ cd infolib-2.0
@@ -47,9 +47,9 @@ $ sudo mkdir -p /etc/paths.d && echo /Applications/Postgres.app/Contents/Version
 Create database
 ```bash
 $ psql
-# create database <dbname>;
-# create user <username> superuser;
-# alter user <username> password <password>;
+> create database <dbname>;
+> create user <username> superuser;
+> alter user <username> password <password>;
 ```
 
 Replace sqlite3 information with the new ones. Store the database name, username and password in a .env file in the root of the project.
