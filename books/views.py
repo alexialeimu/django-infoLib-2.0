@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
-from django.http import Http404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
 from .models import Book, Borrowing, Review
 from books.forms import BookForm, UserForm, ReviewForm
 from django.urls import reverse
 from django.utils.formats import get_format
 from datetime import datetime
 from django.utils.dateformat import DateFormat
+from django.core.paginator import Paginator
 # Authorization:
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -31,7 +32,7 @@ def add_book(request):
         # check whether it's valid:
         if book_form.is_valid():
             # process the data in form.cleaned_data as required
-            book_ISBN = book_form.cleaned_data['ISBN']
+            # book_ISBN = book_form.cleaned_data['ISBN']
             book_name = book_form.cleaned_data['name']
             book_description = book_form.cleaned_data['description']
             book_author = book_form.cleaned_data['author']
@@ -39,7 +40,7 @@ def add_book(request):
             book_publisher = book_form.cleaned_data['publisher']
             book_page_count = book_form.cleaned_data['page_count']
             book_cover_URL = book_form.cleaned_data['cover_URL']
-            new_book = Book(ISBN=book_ISBN, name=book_name, description=book_description, author=book_author,
+            new_book = Book(name=book_name, description=book_description, author=book_author,
                             publication_year=book_publication_year, publisher=book_publisher, page_count=book_page_count, cover_URL=book_cover_URL)
             new_book.save()
             # redirect to a new URL:
@@ -54,11 +55,14 @@ def add_book(request):
 def adminpage(request):
     try:
         all_users = User.objects.all()
-        all_borrowings = Borrowing.objects.all()
         all_reviews = Review.objects.all()
+        all_borrowings = Borrowing.objects.all().order_by('-borrowing_date')
+        borrowings_paginator = Paginator(all_borrowings, 15)
+        borrowings_page_number = request.GET.get('page')
+        borrowings_page_obj = borrowings_paginator.get_page(borrowings_page_number)
     except Book.DoesNotExist:
         raise Http404("Question does not exist")
-    return render(request, 'admin_page.html', {'all_users': all_users, 'all_borrowings': all_borrowings, 'all_reviews': all_reviews})
+    return render(request, 'admin_page.html', {'all_users': all_users, 'all_borrowings': all_borrowings, 'all_reviews': all_reviews, 'borrowings_page_obj': borrowings_page_obj})
 
 # unique page for every book
 def detail(request, book_id):
@@ -75,16 +79,19 @@ def detail(request, book_id):
 def profile(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
-        all_borrowings = Borrowing.objects.all()
-        all_borrowings = Borrowing.objects.filter(borrower=user_id)
+        all_borrowings = Borrowing.objects.filter(borrower=user_id).order_by('-borrowing_date')
+        all_reviews = Review.objects.filter(reviewer=user_id)
+        borrowings_paginator = Paginator(all_borrowings, 15)
+        borrowings_page_number = request.GET.get('page')
+        borrowings_page_obj = borrowings_paginator.get_page(borrowings_page_number)
     except User.DoesNotExist:
         raise Http404("Question does not exist")
-    return render(request, 'profile.html', {'user': user, 'all_borrowings': all_borrowings})
+    return render(request, 'profile.html', {'user': user, 'all_borrowings': all_borrowings, 'all_reviews': all_reviews, 'borrowings_page_obj': borrowings_page_obj})
 
 def search(request):
     query = request.GET.get('q')
     if query:
-        rresults = Book.objects.filter(Q(name__icontains=query) | Q(author__icontains=query) | Q(publication_year__icontains=query) | Q(publisher__icontains=query) | Q(ISBN__icontains=query))
+        results = Book.objects.filter(Q(name__icontains=query) | Q(author__icontains=query) | Q(publication_year__icontains=query) | Q(publisher__icontains=query))
     else:
         results = Book.objects.all()
     all_borrowings = Borrowing.objects.all()
@@ -93,19 +100,21 @@ def search(request):
 
 @login_required
 def borrow(request, book_id, user_id):
-    detailurl = request.build_absolute_uri(
-        reverse('books:detail', args=[book_id]))
-    book = Book.objects.get(pk=book_id)
-    user = User.objects.get(pk=user_id)
-    book.borrowed = True
-    book.borrower = user
-    book.status = 'o'
-    book.save()
-    date = DateFormat(datetime.now()).format(get_format('DATE_FORMAT'))
-    new_borrowing = Borrowing(borrowing_date=date, book=book, borrower=user)
-    new_borrowing.save()
-    # return render(request, 'books/detail.html', {'detailurl': detailurl, 'book': book})
-    return HttpResponseRedirect('/')
+    if request.user.id == user_id:
+        detailurl = request.build_absolute_uri(
+            reverse('books:detail', args=[book_id]))
+        book = Book.objects.get(pk=book_id)
+        user = User.objects.get(pk=user_id)
+        book.borrowed = True
+        book.borrower = user
+        book.status = 'o'
+        book.save()
+        date = DateFormat(datetime.now()).format(get_format('DATE_FORMAT'))
+        new_borrowing = Borrowing(borrowing_date=date, book=book, borrower=user)
+        new_borrowing.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        raise PermissionDenied
 
 @login_required
 def return_book(request, book_id):
@@ -117,7 +126,7 @@ def return_book(request, book_id):
     book.status = 'a'
     book.save()
     # return render(request, 'books/detail.html', {'detailurl': detailurl, 'book': book})
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def register(request):
     registered = False
@@ -153,7 +162,8 @@ def reviews(request, book_id, user_id):
             return HttpResponseRedirect(detailurl)
     else:
         review_form = ReviewForm()
-    return render(request, 'books/review_book.html', {'detailurl': detailurl, 'review': review_form})
+        book = Book.objects.get(pk=book_id)
+    return render(request, 'books/review_book.html', {'book': book, 'detailurl': detailurl, 'review': review_form})
 
 @user_passes_test(lambda u: u.is_superuser)
 def delete_book(request, book_id):
