@@ -1,26 +1,21 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base_section.html" %}
 
-{% if user.is_authenticated and user.is_superuser %}
+{% block title %} Delete book {% endblock %}
 
-<section>
-	<div class="container my-10">
-		<h1 class="text-4xl font-bold text-center">Delete book</h1>
-	</div>
-    <div>
+{% block section %}
+
+	{% if user.is_authenticated and user.is_superuser %}
+
 		<h2 class="text-2xl text-center mb-3">You are about to delete the book <span class="text-bold">{{ book.name }}</span></h2>
 
-        <form class="relative mx-auto flex flex-col justify-center w-full md:w-3/4 max-w-3xl mt-10" method="post" action="">
-            {% csrf_token %}
+		<form class="relative mx-auto flex flex-col justify-center w-full md:w-3/4 max-w-3xl mt-10" method="post" action="">
+			{% csrf_token %}
 
 			<button id="return" type="submit" class="w-full md:w-1/2 bg-red-400 py-3 px-2 mx-auto mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center">Delete book</button>
 
 			<a href="{{ detailurl }}" class="w-full md:w-1/2 bg-gray-300 py-3 px-2 mx-auto mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center" id="goback" role="button">Go back to the book page</a>
-        </form>
-		
-    </div>
-</section>
+		</form>
 
-{% endif %}
+	{% endif %}
 
 {% endblock %}

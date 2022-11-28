@@ -1,9 +1,7 @@
-{% load static %}
 {% load tailwind_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,34 +14,17 @@
 
 <body class="bg-gray-100">
     <!-- Navbar -->
-    <nav class="relative md:container mx-4 md:mx-auto py-6">
+    <nav class="md:container mx-auto px-4 flex flex-col space-y-0 md:space-y-12 md:space-y-4 py-6 align-center">
         <div class="flex items-center justify-between">
 
             <!-- Logo -->
-            <div class="pt-2">
+            <div>
                 <a href="/" class="text-bold text-3xl font-bold uppercase text-baseColorDark hover:text-baseColor">InfoLib</a>
             </div>
 
             <!-- Nav Items -->
             <div class="hidden space-x-6 md:flex">
-                {% if user.is_authenticated %}
-                    <!-- navbar that an authenticated user sees -->
-                    <a href="{% url 'books:profile' user.id %}">Profile</a>
-                    <!-- links that only admin sees -->
-                    {% if user.is_superuser %}
-                        <a href="{% url 'books:adminpage' %}">Admin</a>
-                        <a href="{% url 'books:add_book' %}">Add book</a>
-                    {% endif %}
-                    <a href="{% url 'logout'%}">Logout</a>
-                {% else %}
-                    <!-- navbar that a non-authenticated user sees -->
-                    <a href="{% url 'login'%}?next={{request.path}}">
-                        Login
-                    </a>
-                    <a href="{% url 'books:register' %}">
-                        Register
-                    </a>
-                {% endif %}
+                {% include 'menu.html' %}
             </div>
 
             <!-- Hamburger icon -->
@@ -52,42 +33,23 @@
                 <span class="hamburger-middle"></span>
                 <span class="hamburger-bottom"></span>
             </button>
+
         </div>
 
         <!-- Mobile menu -->
         <div class="md:hidden">
             <div id="menu" class="z-10 absolute flex-col items-center hidden self-end py-4 mt-10 space-y-6 font-bold bg-white sm:w-auto sm:self-center left-4 right-4 drop-shadow-md">
-                {% if user.is_authenticated %}
-                    <!-- navbar that an authenticated user sees -->
-                    <a href="{% url 'books:profile' user.id %}">Profile</a>
-                    <!-- links that only admin sees -->
-                    {% if user.is_superuser %}
-                        <a href="{% url 'books:adminpage' %}">Admin page</a>
-                        <a href="{% url 'books:add_book' %}">Add book</a>
-                    {% endif %}
-                    <a href="{% url 'logout'%}">Logout</a>
-                {% else %}
-                    <!-- navbar that a non-authenticated user sees -->
-                    <a href="{% url 'login'%}?next={{request.path}}">
-                        Login
-                    </a>
-                    <a href="{% url 'books:register' %}">
-                        Register
-                    </a>
-                {% endif %}
+                {% include 'menu.html' %}
             </div>
         </div>
     </nav>
 
-    <div class="lg:container mx-4 lg:mx-auto space-y-16 mb-12">
-
+    <div class="md:container mx-auto px-4 flex flex-col my-6 md:my-12 space-y-0 md:space-y-12 md:space-y-4">
         {% block content %} {% endblock %}
-
     </div>
     <script>
         const btn = document.getElementById("menu-btn")
         const nav = document.getElementById("menu")
-
 
         btn.addEventListener("click", () => {
             btn.classList.toggle("open")

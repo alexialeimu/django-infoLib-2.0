@@ -6,7 +6,7 @@
 .hamburger {
     cursor: pointer;
     width: 24px;
-    height: 24px;
+    height: 16px;
     transition: all 0.25s;
     position: relative;
 }

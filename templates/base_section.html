@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section>
+    <div class="container mb-6">
+        <h1 class="text-4xl font-bold text-center">{% block title %}{% endblock %}</h1>
+    </div>
+    <div>
+        {% block section %}{% endblock %}
+    </div>
+</section>
+
+{% endblock %}

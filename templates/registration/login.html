@@ -1,28 +1,24 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base_section.html" %}
 
-<section>
-	<div class="container my-10">
-		<h1 class="text-4xl font-bold text-center">Log in</h1>
-	</div>
-    <div>
-		{% if form.errors %}
-			<h2 class="text-2xl text-center mb-3">
-				Your username and password didn't match. Please try again.
-			</h2>
-		{% endif %}
+{% block title %} Log in {% endblock %}
 
-		<form class="relative mx-auto flex flex-col w-full md:w-3/4 max-w-3xl" method="post" action="{% url 'login' %}">
-			{% csrf_token %}
-			<label for="username" class="sr-only">Username</label>
-			<input class="w-full md:w-1/2 block px-4 my-0 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="username" type="text" placeholder="Username" required /><br>
+{% block section %}
 
-			<label for="password" class="sr-only">Password</label>
-			<input class="w-full md:w-1/2 block px-4 my-0 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="password" type="password" placeholder="Password" required /><br>
+{% if form.errors %}
+	<h2 class="text-2xl text-center mb-3">
+		Your username and password didn't match. Please try again.
+	</h2>
+{% endif %}
 
-			<button class="w-full md:w-1/2 mx-auto bg-baseColorLight py-3 px-2 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center" type="submit" value="login">Login</button>
-		</form>
-	</div>
-</section>
+<form class="relative mx-auto flex flex-col w-full md:w-3/4 max-w-3xl" method="post" action="{% url 'login' %}">
+	{% csrf_token %}
+	<label for="username" class="sr-only">Username</label>
+	<input class="w-full md:w-1/2 block px-4 my-0 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="username" type="text" placeholder="Username" required /><br>
+
+	<label for="password" class="sr-only">Password</label>
+	<input class="w-full md:w-1/2 block px-4 my-0 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="password" type="password" placeholder="Password" required /><br>
+
+	<button class="w-full md:w-1/2 mx-auto bg-baseColorLight py-3 px-2 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center" type="submit" value="login">Login</button>
+</form>
 
 {% endblock %}
