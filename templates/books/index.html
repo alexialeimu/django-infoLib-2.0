@@ -2,109 +2,107 @@
 
 <!-- content -->
 
-<article id="team">
-    <div class="container">
-        <div class="row">
-            <div>
-                <h3>ALL BOOKS</h3>
+<section>
+    <div class="container flex flex-col mx-auto mt-6 md:mt-12 space-y-0 md:space-y-12 md:space-y-4">
+        
+        <h1 class="text-4xl font-bold text-center">Books</h1>
 
-                <div id="search_container">
-                    <form role="search" method="get" action="/search/">
-                        <div class="input-group search-input-group">
-                            <input type="text" class="form-control" id="searchBox" class="form-control" name="q" value="{{ query }}" placeholder="Search">
-                            <span class="input-group-addon">
-                                <button type="submit">
-                                    <span class="glyphicon glyphicon-search" value="search"></span>
-                                </button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-
-
-                {% if all_books or results %}
-                    <div class="table-responsive" id="all_books">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Borrow</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <!-- book search: show only the result books -->
-                                {% if results %}
-
-                                    {% for book in results %}
-                                    <tr>
-                                        <td>
-                                            {{ book.author }}, {{ book.publication_year }}
-                                            <a href="{% url 'books:detail' book.id %}">
-                                                <h4>{{ book.name }}</h4>
-                                            </a>
-                                        </td>
-                                        {% if book.status == 'o' %} {% if user.is_authenticated and book.borrower == user %}
-                                        <td>
-                                            <a href="{% url 'books:return' book.id %}?next={{request.path}}" class="btn btn-danger btn-sm" id="return" role="button">Return</a>
-                                        </td>
-                                        {% else %}
-                                        <td>
-                                            Borrowed by <a href="{% url 'books:profile' book.borrower.id %}"><span class="username">{{ book.borrower }}</span></a>
-                                        </td>
-                                        {% endif %} {% elif book.status == 'a' and user.is_authenticated %}
-                                        <td>
-                                            <a href="{% url 'books:borrow' book.id user.id %}?next={{request.path}}" class="btn btn-success btn-sm" id="borrow" role="button">Borrow</a>
-                                        </td>
-                                        {% else %}
-                                        <td>Sign in!</td>
-                                        {% endif %}
-                                    </tr>
-                                    {% endfor %}
-
-                                <!-- list all the books -->
-
-                                {% elif all_books %}
-
-                                    {% for book in all_books %}
-                                        <tr>
-                                            <td>
-                                                {{ book.author }}, {{ book.publication_year }}
-                                                <a href="{% url 'books:detail' book.id %}">
-                                                    <h4>{{ book.name }}</h4>
-                                                </a>
-                                            </td>
-                                            {% if book.status == 'o' %} {% if user.is_authenticated and book.borrower == user %}
-                                            <td>
-                                                <a href="{% url 'books:return' book.id %}?next={{request.path}}" class="btn btn-danger btn-sm" id="return" role="button">Return</a>
-                                            </td>
-                                            {% else %}
-                                            <td>
-                                                Borrowed by <a href="{% url 'books:profile' book.borrower.id %}"><span class="username">{{ book.borrower }}</span></a>
-                                            </td>
-                                            {% endif %} {% elif book.status == 'a' and user.is_authenticated %}
-                                            <td>
-                                                <a href="{% url 'books:borrow' book.id user.id %}?next={{request.path}}" class="btn btn-success btn-sm" id="borrow" role="button">Borrow</a>
-                                            </td>
-                                            {% else %}
-                                            <td>Please sign in</td>
-                                            {% endif %}
-                                        </tr>
-                                    {% endfor %}
-
-                                {% endif %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                {% endif %}
-
+        <form role="search" method="get" action="/search/">
+            <div class="relative mx-auto flex flex-wrap w-full md:w-3/4 max-w-3xl">
+                <input type="search" id="searchBox" class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded-full focus:outline-none focus:border-blue-500 mx-auto" name="q" value="{{ query }}" placeholder="Search">
+                <button type="submit" class="absolute top-0 right-0 my-4 py-3 pr-4">
+                    <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <span class="sr-only">Search</span>
+                </button>
             </div>
+        </form>
+
+        {% if all_books or results or results.count == 0 %}
+        <!-- Card container -->
+        <div class="flex flex-wrap">
+            <!-- Cards -->
+            {% if results %}             
+                <div class="w-full">
+                    <div class="mb-3">{{ results.count }} books found. <a href="/" class="font-bold">Show all books.</a></div>
+                </div>
+                {% for book in results %}
+                    <!-- single card container -->
+                    <div class="relative flex w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-0 py-2 md:px-2">
+                        <!-- card content -->
+                        <div class="book-card text-sm md:text-base w-full flex lg:flex-row rounded overflow-hidden shadow hover:shadow-md h-auto bg-white">
+                            <!-- image -->
+                            <a href="{% url 'books:detail' book.id %}" class="w-1/3 h-40 md:h-48 bg-gray-300">
+                                {% if book.cover_URL %}
+                                    <img src="{{ book.cover_URL }}" class="block w-full h-full md:h-full object-cover bg-gray" alt="">
+                                {% endif %}
+                            </a>
+                            <!-- info -->
+                            <div class="w-full h-full w-2/3 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between">
+                                <a href="{% url 'books:detail' book.id %}">
+                                    <h2 class="book-title font-bold">{{ book.name }}</h2>
+                                    <span class="book-author">{{ book.author }}</span>
+                                </a>
+                                <!-- button -->
+                                {% if book.status == 'o' %} {% if user.is_authenticated and book.borrower == user %}
+                                    <a href="{% url 'books:return' book.id %}?next={{request.path}}" class="w-1/2 bg-baseColorLight py-2 px-0 md:py-3 md:px-2 mt-2 rounded text-sm font-semibold hover:bg-opacity-75 text-center" role="button">Return</a>
+                                {% else %}
+                                    <span class="text-xs text-gray-400">Borrowed by <a href="{% url 'books:profile' book.borrower.id %}" class="font-bold">{{ book.borrower }}</a></span>
+                                
+                                {% endif %} {% elif book.status == 'a' and user.is_authenticated %}
+                                    <a href="{% url 'books:borrow' book.id user.id %}?next={{request.path}}" class="w-1/2 bg-accentColor py-2 px-0 md:py-3 md:px-2 mt-2 rounded text-sm font-semibold hover:bg-opacity-75 text-center" role="button">Borrow</a>
+                                {% else %}
+                                <!-- <div class="text-sm text-gray-400">Sign in to Borrow</div> -->
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% elif all_books %}
+                <!-- list all the books -->
+                {% for book in all_books %}
+                    <!-- single card container -->
+                    <div class="relative flex w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-0 py-2 md:px-2">
+                        <!-- card content -->
+                        <div class="book-card text-sm md:text-base w-full flex lg:flex-row rounded overflow-hidden shadow hover:shadow-md h-auto bg-white">
+                            <!-- image -->
+                            <a href="{% url 'books:detail' book.id %}" class="w-1/3 h-40 md:h-48 bg-gray-300">
+                                {% if book.cover_URL %}
+                                    <img src="{{ book.cover_URL }}" class="block w-full h-full md:h-full object-cover bg-gray" alt="">
+                                {% endif %}
+                            </a>
+                            <!-- info -->
+                            <div class="w-full h-full w-2/3 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between">
+                                <a href="{% url 'books:detail' book.id %}">
+                                    <h2 class="book-title font-bold">{{ book.name }}</h2>
+                                    <span class="book-author">{{ book.author }}</span>
+                                </a>
+                                <!-- button -->
+                                {% if book.status == 'o' %} {% if user.is_authenticated and book.borrower == user %}
+                                    <a href="{% url 'books:return' book.id %}?next={{request.path}}" class="w-1/2 bg-baseColorLight py-2 px-0 md:py-3 md:px-2 mt-2 rounded text-sm font-semibold hover:bg-opacity-75 text-center" role="button">Return</a>
+                                {% else %}
+                                    <span class="text-xs text-gray-400">Borrowed by <a href="{% url 'books:profile' book.borrower.id %}" class="font-bold">{{ book.borrower }}</a></span>
+                                
+                                {% endif %} {% elif book.status == 'a' and user.is_authenticated %}
+                                    <a href="{% url 'books:borrow' book.id user.id %}?next={{request.path}}" class="w-1/2 bg-accentColor py-2 px-0 md:py-3 md:px-2 mt-2 rounded text-sm font-semibold hover:bg-opacity-75 text-center" role="button">Borrow</a>
+                                {% else %}
+                                <!-- <div class="text-sm text-gray-400">Sign in to Borrow</div> -->
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            
+            {% elif results.count == 0 %}
+                <div class="w-full">
+                    <div class="mb-3">{{ results.count }} books found. <a href="/" class="font-bold">Show all books.</a></div>
+                </div>
+            {% endif %}
+            
         </div>
+        {% endif %}
     </div>
-</article>
+</section>
 
 <!-- content -->
-
 
 {% endblock %}
