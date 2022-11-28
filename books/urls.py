@@ -4,7 +4,7 @@ from . import views
 app_name = 'books'
 
 urlpatterns = [
-    path('<int:book_id>/return/', views.return_book, name='return'),
+    path('<int:book_id>/<int:user_id>/return/', views.return_book, name='return'),
     path('<int:book_id>/<int:user_id>/borrow/', views.borrow, name='borrow'),
     path('<int:book_id>/', views.detail, name="detail"),
     path('reviews/<int:book_id>/<int:user_id>/', views.reviews, name='reviews'),
@@ -13,11 +13,9 @@ urlpatterns = [
     path('add_book/', views.add_book, name='add_book'),
     path('search/', views.search, name='search'),
     path('', views.index, name='index'),
-    path('adminpage/', views.adminpage, name="adminpage"),
+    path('admin/', views.admin, name="admin"),
     path('delete/<int:book_id>/', views.delete_book, name='delete'),
-
-    # todo: 'user' app for these?
-    path('register/', views.register, name="register"),
+    path('signup/', views.signup, name="signup"),
 ]
 
 # From Django 2.0 release notes:

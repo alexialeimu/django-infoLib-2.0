@@ -32,7 +32,6 @@ def add_book(request):
         # check whether it's valid:
         if book_form.is_valid():
             # process the data in form.cleaned_data as required
-            # book_ISBN = book_form.cleaned_data['ISBN']
             book_name = book_form.cleaned_data['name']
             book_description = book_form.cleaned_data['description']
             book_author = book_form.cleaned_data['author']
@@ -51,8 +50,8 @@ def add_book(request):
         book_form = BookForm()
     return render(request, 'books/add_book.html', {'booksurl': booksurl, 'book_form': book_form})
 
-# @user_passes_test(lambda u: u.is_superuser)
-def adminpage(request):
+@user_passes_test(lambda u: u.is_superuser)
+def admin(request):
     try:
         all_users = User.objects.all()
         all_reviews = Review.objects.all()
@@ -62,7 +61,7 @@ def adminpage(request):
         borrowings_page_obj = borrowings_paginator.get_page(borrowings_page_number)
     except Book.DoesNotExist:
         raise Http404("Question does not exist")
-    return render(request, 'admin_page.html', {'all_users': all_users, 'all_borrowings': all_borrowings, 'all_reviews': all_reviews, 'borrowings_page_obj': borrowings_page_obj})
+    return render(request, 'admin.html', {'all_users': all_users, 'all_borrowings': all_borrowings, 'all_reviews': all_reviews, 'borrowings_page_obj': borrowings_page_obj})
 
 # unique page for every book
 def detail(request, book_id):
@@ -74,7 +73,6 @@ def detail(request, book_id):
         raise Http404("Question does not exist")
     return render(request, 'books/detail.html', {'book': book, 'all_borrowings': all_borrowings, 'all_reviews': all_reviews})
 
-# unique profile page for every user
 @login_required
 def profile(request, user_id):
     try:
@@ -117,18 +115,21 @@ def borrow(request, book_id, user_id):
         raise PermissionDenied
 
 @login_required
-def return_book(request, book_id):
-    detailurl = request.build_absolute_uri(
-        reverse('books:detail', args=[book_id]))
-    book = Book.objects.get(pk=book_id)
-    book.borrowed = False
-    book.borrower = None
-    book.status = 'a'
-    book.save()
-    # return render(request, 'books/detail.html', {'detailurl': detailurl, 'book': book})
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+def return_book(request, book_id, user_id):
+    if request.user.id == user_id:
+        detailurl = request.build_absolute_uri(
+            reverse('books:detail', args=[book_id]))
+        book = Book.objects.get(pk=book_id)
+        book.borrowed = False
+        book.borrower = None
+        book.status = 'a'
+        book.save()
+        # return render(request, 'books/detail.html', {'detailurl': detailurl, 'book': book})
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        raise PermissionDenied
 
-def register(request):
+def signup(request):
     registered = False
     if request.method == 'POST':
         user_form = UserForm(request.POST)
@@ -141,7 +142,7 @@ def register(request):
             print (user_form.errors)
     else:
         user_form = UserForm()
-    return render(request, 'register.html', {'user_form': user_form, 'registered': registered})
+    return render(request, 'signup.html', {'user_form': user_form, 'registered': registered})
 
 # function to get every review for a specific book
 def reviews(request, book_id, user_id):
@@ -165,12 +166,12 @@ def reviews(request, book_id, user_id):
         book = Book.objects.get(pk=book_id)
     return render(request, 'books/review_book.html', {'book': book, 'detailurl': detailurl, 'review': review_form})
 
+# function to let the admin to delete books
 @user_passes_test(lambda u: u.is_superuser)
 def delete_book(request, book_id):
     booksurl = request.build_absolute_uri(reverse('books:index'))
     detailurl = request.build_absolute_uri(reverse('books:detail', args=[book_id]))
     book = Book.objects.get(pk=book_id)
-    # if OK is pressed, delete game and redirect to /games/
     if request.method == 'POST':
         book.delete()
         return HttpResponseRedirect('/')
