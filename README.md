@@ -28,13 +28,13 @@ $ source .venv/bin/activate
 
 Install dependencies
 ```bash
-$ cd infolib/theme/static_src
+$ cd infolib-2.0/theme/static_src
 $ npm install
 ```
 
 Install requirements
 ```bash
-$ cd infolibdemo/
+$ cd infolib-2.0/
 $ pip3 install -r requirements.txt
 ```
 
@@ -52,7 +52,7 @@ $ psql
 > alter user <username> password <password>;
 ```
 
-Replace sqlite3 information with the new ones. Store the database name, username and password in a .env file in the root of the project.
+Store the database name, username and password in a .env file in the root of the project.
 
 ## Running the app
 
