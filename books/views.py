@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from .models import Book, Borrowing, Review
-from books.forms import BookForm, UserForm, ReviewForm
+from .forms import BookForm, UserForm, ReviewForm
 from django.urls import reverse
 from django.utils.formats import get_format
 from datetime import datetime
