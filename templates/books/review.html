@@ -1,37 +1,35 @@
 <!-- Review section -->
 {% if user.is_authenticated %}
-<section>
-	<div class="max-w-5xl mx-auto">
-		<div class="flex justify-between items-center">
-			<h2 class="text-2xl font-bold">Reviews</h2>
-			
-			<!-- Review this book -button -->
-			<a href="{% url 'books:reviews' book.id user.id %}" class="block w-auto bg-gray-300 py-3 px-4 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center" role="button">Review this book</a>
-		</div>
-
-		{% if all_reviews %}
-			<div class="flex flex-col flex-wrap -mx-4 mt-4 md:flex-row">
-				{% for review in all_reviews %}
-						
-					<div class="my-4 space-y-6 md:w-1/3 w-auto">
-						<div class="">
-							<div class="w-auto mx-4 p-6 bg-white shadow">
-								<div class="text-lg font-bold"><a href="{% url 'books:profile' review.reviewer.id %}">{{ review.reviewer }}</a></div>
-								<div class="text-sm text-darkGray">{{ review.rating }} / 5</div>
-								<p>
-									{{ review.review|linebreaksbr }}
-								</p>
-							</div>
-						</div>
-					</div>
-				
-				{% endfor %}
-			</div>
-		{% elif all_reviews.count == 0 %}
-            <div class="w-full">
-                <div class="mb-3">0 reviews</div>
+    <section>
+        <div class="max-w-5xl mx-auto">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">Reviews</h2>
+                <!-- Review this book -button -->
+                <a href="{% url 'books:reviews' book.id user.id %}"
+                   class="block w-auto bg-gray-300 py-3 px-4 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center"
+                   role="button">Review this book</a>
             </div>
-		{% endif %}
-	</div>
-</section>
+            {% if all_reviews %}
+                <div class="flex flex-col flex-wrap -mx-4 mt-4 md:flex-row">
+                    {% for review in all_reviews %}
+                        <div class="my-4 space-y-6 md:w-1/3 w-auto">
+                            <div>
+                                <div class="w-auto mx-4 p-6 bg-white shadow">
+                                    <div class="text-lg font-bold">
+                                        <a href="{% url 'books:profile' review.reviewer.id %}">{{ review.reviewer }}</a>
+                                    </div>
+                                    <div class="text-sm text-darkGray">{{ review.rating }} / 5</div>
+                                    <p>{{ review.review|linebreaksbr }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% elif all_reviews.count == 0 %}
+                <div class="w-full">
+                    <div class="mb-3">0 reviews</div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
 {% endif %}

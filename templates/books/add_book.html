@@ -1,35 +1,69 @@
 {% extends "base_section.html" %}
 
-{% block title %} Add book {% endblock %}
+{% block title %}
+    Add book
+{% endblock title %}
 
 {% block section %}
-        
-<form class="relative mx-auto flex flex-wrap w-full md:w-3/4 max-w-3xl" method="post" action="">
-    {% csrf_token %}
+    <form class="relative mx-auto flex flex-wrap w-full md:w-3/4 max-w-3xl"
+          method="post"
+          action="">
+        {% csrf_token %}
 
-    <label for="id_book_name" class="sr-only">Book name</label>
-    <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="name" type="text" placeholder="Book name" required />
+        <label for="id_book_name" class="sr-only">Book name</label>
+        <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+               name="name"
+               type="text"
+               placeholder="Book name"
+               required/>
 
-    <label for="id_book_author" class="sr-only">Author</label>
-    <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="author" type="text" placeholder="Author" />
+        <label for="id_book_author" class="sr-only">Author</label>
+        <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+               name="author"
+               type="text"
+               placeholder="Author"/>
 
-    <label for="id_description" class="sr-only">Description</label>
-    <textarea id="description-box" rows="10" class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="description" type="text" placeholder="Description"></textarea>
-
-    <label for="id_publication_year" class="sr-only">Publication year:</label>
-    <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="publication_year" type="number" min="1000" max="2999" step="1" placeholder="Publication year" required />
-
-    <label for="id_publisher" class="sr-only">Publisher</label>
-    <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="publisher" type="text" placeholder="Publisher" />
-
-    <label for="id_page_count" class="sr-only">Page count:</label>
-    <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="page_count" type="number" min="0" max="9999" step="1" placeholder="Page count" required />
-
-    <label for="id_cover_URL" class="sr-only">Cover URL</label>
-    <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="cover_URL" type="text" placeholder="Cover URL" required/>
-
-    <button type="submit" class="w-full bg-baseColorLight py-3 px-2 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center" role="button">Submit</button>
-
-</form>
-
-{% endblock %}
+        <label for="id_description" class="sr-only">Description</label>
+        <textarea id="description-box" rows="10" class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="description" type="text" placeholder="Description"></textarea>
+ 
+        <label for="id_publication_year" class="sr-only">Publication year:</label>
+        <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+               name="publication_year"
+               type="number"
+               min="1000"
+               max="2999"
+               step="1"
+               placeholder="Publication year"
+               required/>
+ 
+        <label for="id_publisher" class="sr-only">Publisher</label>
+        <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+               name="publisher"
+               type="text"
+               placeholder="Publisher"/>
+ 
+        <label for="id_page_count" class="sr-only">Page count:</label>
+        <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+               name="page_count"
+               type="number"
+               min="0"
+               max="9999"
+               step="1"
+               placeholder="Page count"
+               required/>
+ 
+        <label for="id_cover_URL" class="sr-only">Cover URL</label>
+        <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+               name="cover_URL"
+               type="text"
+               placeholder="Cover URL"
+               required/>
+ 
+        <button type="submit"
+                class="w-full bg-baseColorLight py-3 px-2 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center"
+                role="button">
+            Submit
+        </button>
+ 
+    </form>
+{% endblock section %}

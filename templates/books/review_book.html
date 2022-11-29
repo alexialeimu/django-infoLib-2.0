@@ -1,23 +1,40 @@
 {% extends "base_section.html" %}
 
-{% block title %} Review book {% endblock %}
+{% block title %}
+    Review book
+{% endblock title %}
 
 {% block section %}
+    <h2 class="text-2xl text-center mb-3">{{ book.author }} – {{ book.name }}</h2>
+    <form class="relative mx-auto flex flex-wrap w-full md:w-3/4 max-w-3xl"
+          method="post"
+          action="">
+        {% csrf_token %}
 
-<h2 class="text-2xl text-center mb-3">{{ book.author }} – {{ book.name }}</h2>
+        <label for="id_review" class="sr-only">Review</label>
+        <textarea id="description-box" rows="8" class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="review" type="text" placeholder="Review" required></textarea>
+ 
+        <label for="id_rating" class="sr-only">Rating</label>
+        <input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+               name="rating"
+               type="number"
+               min="1"
+               max="5"
+               step="1"
+               placeholder="Rating 1-5"
+               required/>
 
-<form class="relative mx-auto flex flex-wrap w-full md:w-3/4 max-w-3xl" method="post" action="">
-	{% csrf_token %}
-
-	<label for="id_review" class="sr-only">Review</label>
-	<textarea id="description-box" rows="8" class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="review" type="text" placeholder="Review" required></textarea><br>
-
-	<label for="id_rating" class="sr-only">Rating</label>
-	<input class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="rating" type="number" min="1" max="5" step="1" placeholder="Rating 1-5" required /><br>
-
-	<button class="w-full bg-baseColorLight py-3 px-2 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center" id="form-button" type="submit" value="Submit">Submit</button>
-
-	<a href="{{ detailurl }}" class="mt-4 font-semibold text-center hover:text-baseColorDark" id="goback" role="button">Go back to the book page</a>
-</form>
-
-{% endblock %}
+        <button class="w-full bg-baseColorLight py-3 px-2 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center"
+                id="form-button"
+                type="submit"
+                value="Submit">
+            Submit
+        </button>
+	
+        <a href="{{ detailurl }}"
+           class="mt-4 font-semibold text-center hover:text-baseColorDark"
+           id="goback"
+           role="button">Go back to the book page</a>
+ 
+    </form>
+{% endblock section %}

@@ -1,50 +1,49 @@
 {% extends "base_section.html" %}
 
-{% block title %} Admin page {% endblock %}
+{% block title %}
+    Admin page
+{% endblock title %}
 
 {% block section %}
-		
-<div class="space-y-12">
 
-	<!-- Check out history table -->
-	<div>
-		<h2 class="max-w-5xl mx-auto mb-4 text-2xl font-bold">Check out history</h2>
+    <div class="space-y-12">
 
-		{% include 'tables/all_borrowings.html' with all_borrowings=all_borrowings %}
-	</div>
+        <!-- Check out history table -->
+        <div>
+            <h2 class="max-w-5xl mx-auto mb-4 text-2xl font-bold">Check out history</h2>
+            {% include "tables/all_borrowings.html" with all_borrowings=all_borrowings %}
+        </div>
+ 
+        <!-- Users table -->
+        <div>
+            <h2 class="max-w-5xl mx-auto mb-4 text-2xl font-bold">Users</h2>
+ 
+            {% if all_borrowings %}
+                <table class="max-w-5xl mx-auto border-collapse w-full border border-slate-400 bg-white text-xs md:text-sm shadow-sm table-auto">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="border font-semibold p-4 text-left text-slate-500">User</th>
+                            <th class="border font-semibold p-4 text-left text-slate-500">Date joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if all_users %}
+                            {% for user in all_users|dictsortreversed:"date_joined" %}
+                                <tr>
+                                    <td class="border py-2 px-4 text-slate-500">
+                                        <a href="{% url 'books:profile' user.id %}">
+                                            <span class="username">{{ user.username }}</span>
+                                        </a>
+                                    </td>
+                                    <td class="border py-2 px-4 text-slate-500">{{ user.date_joined | date:"d.m.Y" }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            {% endif %}
+ 
+        </div>
+    </div>
 
-	<!-- Users table -->
-	<div>
-		<h2 class="max-w-5xl mx-auto mb-4 text-2xl font-bold">Users</h2>
-
-		{% if all_borrowings %}
-			<table class="max-w-5xl mx-auto border-collapse w-full border border-slate-400 bg-white text-xs md:text-sm shadow-sm table-auto">
-				<thead class="bg-gray-200">
-					<tr>
-						<th class="border font-semibold p-4 text-left text-slate-500">User</th>
-						<th class="border font-semibold p-4 text-left text-slate-500">Date joined</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% if all_users %}
-						{% for user in all_users|dictsortreversed:"date_joined" %}
-							<tr>
-								<td class="border py-2 px-4 text-slate-500">
-									<a href="{% url 'books:profile' user.id %}">
-										<span class="username">{{ user.username }}</span>
-									</a>
-								</td>
-								<td class="border py-2 px-4 text-slate-500">
-									{{ user.date_joined | date:"d.m.Y" }}
-								</td>
-							</tr>
-						{% endfor %}
-					{% endif %}
-				</tbody>
-			</table>
-		{% endif %}
-	</div>
-
-</div>
-
-{% endblock %}
+{% endblock section %}

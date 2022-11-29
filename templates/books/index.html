@@ -1,43 +1,59 @@
 {% extends "base_section.html" %}
 
-{% block title %} Books {% endblock %}
+{% block title %}
+    Books
+{% endblock title %}
 
 {% block section %}
+    <form role="search" method="get" action="/search/">
+        <div class="relative mx-auto flex flex-wrap w-full md:w-3/4 max-w-3xl">
+            <input type="search"
+                   id="searchBox"
+                   class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded-full focus:outline-none focus:border-blue-500 mx-auto"
+                   name="q"
+                   value="{{ query }}"
+                   placeholder="Search"/>
+            <button type="submit" class="absolute top-0 right-0 my-4 py-3 pr-4">
+                <svg aria-hidden="true"
+                     class="w-5 h-5"
+                     fill="none"
+                     stroke="currentColor"
+                     viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z">
+                    </path>
+                </svg>
+                <span class="sr-only">Search</span>
+            </button>
+        </div>
+    </form>
 
-<form role="search" method="get" action="/search/">
-    <div class="relative mx-auto flex flex-wrap w-full md:w-3/4 max-w-3xl">
-        <input type="search" id="searchBox" class="w-full block px-4 my-4 text-gray-900 border-solid border-gray-300 rounded-full focus:outline-none focus:border-blue-500 mx-auto" name="q" value="{{ query }}" placeholder="Search">
-        <button type="submit" class="absolute top-0 right-0 my-4 py-3 pr-4">
-            <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <span class="sr-only">Search</span>
-        </button>
-    </div>
-</form>
-
-{% if all_books or results or results.count == 0 %}
-    <!-- Card container -->
-    <div class="flex flex-wrap -mr-2">
-        <!-- Cards -->
-        {% if results %}             
-            <div class="w-full">
-                <div class="mb-3">{{ results.count }} books found. <a href="/" class="font-bold">Show all books.</a></div>
-            </div>                
-            {% for book in results %}
-                {% include 'books/cards.html' with item=book %}
-            {% endfor %}
-        {% elif all_books %}
-            <!-- list all the books -->
-            {% for book in all_books %}
-                {% include 'books/cards.html' with item=book %}
-            {% endfor %}
-        
-        {% elif results.count == 0 %}
-            <div class="w-full">
-                <div class="mb-3">{{ results.count }} books found. <a href="/" class="font-bold">Show all books.</a></div>
-            </div>
-        {% endif %}
-        
-    </div>
-{% endif %}
-
-{% endblock %}
+    {% if all_books or results or results.count == 0 %}
+        <!-- Card container -->
+        <div class="flex flex-wrap -mr-2">
+            <!-- Cards -->
+            {% if results %}
+                <div class="w-full">
+                    <div class="mb-3">
+                        {{ results.count }} books found. <a href="/" class="font-bold">Show all books.</a>
+                    </div>
+                </div>
+                {% for book in results %}
+                    {% include "books/cards.html" with item=book %}
+                {% endfor %}
+            {% elif all_books %}
+                <!-- list all the books -->
+                {% for book in all_books %}
+                    {% include "books/cards.html" with item=book %}
+                {% endfor %}
+            {% elif results.count == 0 %}
+                <div class="w-full">
+                    <div class="mb-3">
+                        {{ results.count }} books found. <a href="/" class="font-bold">Show all books.</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+ 
+{% endblock section %}

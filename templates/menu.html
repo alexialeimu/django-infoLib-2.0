@@ -6,13 +6,9 @@
         <a href="{% url 'books:admin' %}">Admin</a>
         <a href="{% url 'books:add_book' %}">Add book</a>
     {% endif %}
-    <a href="{% url 'logout'%}">Logout</a>
+    <a href="{% url 'logout' %}">Logout</a>
 {% else %}
     <!-- navbar that a non-authenticated user sees -->
-    <a href="{% url 'login'%}?next={{request.path}}">
-        Login
-    </a>
-    <a href="{% url 'books:signup' %}">
-        Sign up
-    </a>
+    <a href="{% url 'login' %}?next={{ request.path }}">Login</a>
+    <a href="{% url 'books:signup' %}">Sign up</a>
 {% endif %}

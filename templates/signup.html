@@ -1,22 +1,44 @@
 {% extends "base_section.html" %}
 
-{% block title %} Sign up {% endblock %}
+{% block title %}
+    Sign up
+{% endblock title %}
 
 {% block section %}
 
-{% if registered %}
-	<h2 class="text-2xl text-center mb-3">Thank you for signing up! You can now log in.</h2>
-{% else %}
-	<form class="relative mx-auto flex flex-col w-full md:w-3/4 max-w-3xl" id="user_form" method="post" action="" enctype="multipart/form-data">
-		{% csrf_token %}
-		<label for="id_username" class="sr-only">Username:</label>
-		<input id="id_username" class="w-full md:w-1/2 block px-4 my-0 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="username" type="text" placeholder="Username" required /><br>
+    {% if registered %}
+        <h2 class="text-2xl text-center mb-3">Thank you for signing up! You can now log in.</h2>
+    {% else %}
+        <form class="relative mx-auto flex flex-col w-full md:w-3/4 max-w-3xl"
+              id="user_form"
+              method="post"
+              action=""
+              enctype="multipart/form-data">
+            {% csrf_token %}
 
-		<label for="id_password" class="sr-only">Password:</label>
-		<input id="id_password" class="w-full md:w-1/2 block px-4 my-0 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto" name="password" type="password" placeholder="Password" required /><br>
-
-		<button class="w-full md:w-1/2 mx-auto bg-baseColorLight py-3 px-2 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center" type="submit" name="submit" value="Register" />Register</button>
-	</form>
-{% endif %}
-
-{% endblock %}
+            <label for="id_username" class="sr-only">Username:</label>
+            <input id="id_username"
+                   class="w-full md:w-1/2 block px-4 my-0 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+                   name="username"
+                   type="text"
+                   placeholder="Username"
+                   required/>
+ 
+            <label for="id_password" class="sr-only">Password:</label>
+            <input id="id_password"
+                   class="w-full md:w-1/2 block px-4 my-0 text-gray-900 border-solid border-gray-300 rounded focus:outline-none focus:border-blue-500 mx-auto"
+                   name="password"
+                   type="password"
+                   placeholder="Password"
+                   required/>
+ 
+            <button class="w-full md:w-1/2 mx-auto bg-baseColorLight py-3 px-2 mt-4 rounded text-sm font-semibold hover:bg-opacity-75 text-center"
+                    type="submit"
+                    name="submit"
+                    value="Register">
+                Register
+            </button>
+ 
+        </form>
+    {% endif %}
+{% endblock section %}

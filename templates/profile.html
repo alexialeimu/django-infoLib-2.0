@@ -1,51 +1,53 @@
 {% extends "base_section.html" %}
 
-{% block title %} {{ user }} {% endblock %}
+{% block title %}
+    {{ user }}
+{% endblock title %}
 
 {% block section %}
 
-<div class="space-y-12">
-	<div>
-		<h2 class="max-w-5xl mx-auto mb-4 text-2xl font-bold">Check out history</h2>
+    <div class="space-y-12">
+        <div>
+            <h2 class="max-w-5xl mx-auto mb-4 text-2xl font-bold">Check out history</h2>
+            {% include "tables/all_borrowings.html" with all_borrowings=all_borrowings %}
+        </div>
+        <div>
+            <h2 class="max-w-5xl mx-auto mb-4 text-2xl font-bold">Review history</h2>
 
-		{% include 'tables/all_borrowings.html' with all_borrowings=all_borrowings %}
+            {% if all_reviews %}
+                <table class="max-w-5xl mx-auto border-collapse w-full border border-slate-400 bg-white text-xs md:text-sm shadow-sm table-auto">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="w-1/4 border font-semibold p-4 text-left text-slate-500">Book</th>
+                            <th class="hidden md:table-cell border font-semibold p-4 text-left text-slate-500">Date</th>
+                            <th class="border font-semibold p-4 text-left text-slate-500">Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-	</div>
+                        {% for review in all_reviews|dictsortreversed:"date" %}
+                            <tr>
+                                <td class="border py-2 px-4 text-slate-500">
+                                    <a href="{% url 'books:detail' review.reviewed_book.id %}">
+                                        <div class="font-bold mb-2">{{ review.reviewed_book.name }}</div>
+                                        <div>{{ review.reviewed_book.author }}</div>
+                                    </a>
+                                </td>
+                                <td class="hidden md:table-cell border py-2 px-4 text-slate-500">{{ review.date | date:"d.m.Y" }}</td>
+                                <td class="border py-2 px-4 text-slate-500">
+                                    <a href="{% url 'books:detail' review.reviewed_book.id %}">
+                                        <div class="font-bold mb-2">{{ review.rating }} / 5</div>
+                                        <div>{{ review.review }}</div>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
 
-	<div>
-		<h2 class="max-w-5xl mx-auto mb-4 text-2xl font-bold">Review history</h2>
+                    </tbody>
+                </table>
+            {% endif %}
 
-		{% if all_reviews %}
-			<table class="max-w-5xl mx-auto border-collapse w-full border border-slate-400 bg-white text-xs md:text-sm shadow-sm table-auto">
-				<thead class="bg-gray-200">
-					<tr>
-						<th class="w-1/4 border font-semibold p-4 text-left text-slate-500">Book</th>
-						<th class="hidden md:table-cell border font-semibold p-4 text-left text-slate-500">Date</th>
-						<th class="border font-semibold p-4 text-left text-slate-500">Review</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for review in all_reviews|dictsortreversed:"date" %}
-						<tr>
-							<td class="border py-2 px-4 text-slate-500">
-								<a href="{% url 'books:detail' review.reviewed_book.id %}">
-									<div class="font-bold mb-2">{{ review.reviewed_book.name }}</div>
-									<div>{{ review.reviewed_book.author }}</div>
-								</a>
-							</td>
-							<td class="hidden md:table-cell border py-2 px-4 text-slate-500">{{ review.date | date:"d.m.Y" }}</td>
-							<td class="border py-2 px-4 text-slate-500">
-								<a href="{% url 'books:detail' review.reviewed_book.id %}">
-									<div class="font-bold mb-2">{{ review.rating }} / 5</div>
-									<div>{{ review.review }}</div>
-								</a>
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		{% endif %}
-	</div>
-</div>
+        </div>
+    </div>
 
-{% endblock %}
+{% endblock section %}
