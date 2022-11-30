@@ -51,7 +51,7 @@ def add_book(request):
     return render(request, 'books/add_book.html', {'booksurl': booksurl, 'book_form': book_form})
 
 @user_passes_test(lambda u: u.is_superuser)
-def admin(request):
+def adminpage(request):
     try:
         all_users = User.objects.all()
         all_reviews = Review.objects.all()

@@ -3,7 +3,7 @@
     <a href="{% url 'books:profile' user.id %}">Profile</a>
     <!-- links that only admin sees -->
     {% if user.is_superuser %}
-        <a href="{% url 'books:admin' %}">Admin</a>
+        <a href="{% url 'books:adminpage' %}">Admin</a>
         <a href="{% url 'books:add_book' %}">Add book</a>
     {% endif %}
     <a href="{% url 'logout' %}">Logout</a>
